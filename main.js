@@ -2,7 +2,7 @@
 var mainState = {
     preload: function() {
 game.load.image('bird', 'assets/bird.png');
-
+game.load.image('pipe', 'assets/pipe.png');
       },
       create: function() {
 
@@ -19,7 +19,9 @@ game.load.image('bird', 'assets/bird.png');
 
       spaceKey.onDown.add(this.jump, this);
 
+      this.pipes = game.add.group();
 
+      this.timer = game.time.events.loop(1500, this.addRowOfPipes, this); 
 
     },
 
@@ -38,7 +40,32 @@ jump: function(){
       game.state.start('main');
   },
 
+addOnePipe: function(x, y) {
+  var pipe = game.add.sprite(x, y, 'pipe');
+  this.pipes.add(pipe)
+  game.physics.arcade.enable(pipe);
+   pipe.body.velocity.x = -200;
+
+   pipe.checkWorldBounds = true;
+    pipe.outOfBoundsKill = true;
+
+  }
+
+  addRowOfPipes: function(){
+    var hole = Math.floor(Math.random() * 5) + 1;
+
+    for (var i = 0; i < 8; i++){
+     if (i != hole && i != hole + 1 && i != hole +2){
+       this.addOnePipe(400, i * 60 + 10);
+     }
+    }
+  }
+
+
+
 };
+
+
 
 // Initialize Phaser, and create a 400px by 490px game
 var game = new Phaser.Game(400, 490);
